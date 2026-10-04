@@ -1,35 +1,39 @@
 {
   "name": "docx_edit",
-  "description": "Создать или изменить .docx через блочный формат. Блоки передаются строкой в параметре blocks или через путь к файлу в blocks_file.",
+  "description": "Create or modify a .docx file via the block format. Blocks can be passed as a string in the `blocks` parameter or via a file path in `blocks_file`.",
   "input_schema": {
     "type": "object",
     "properties": {
       "docx_path": {
         "type": "string",
-        "description": "Путь к .docx-файлу (создаётся при --rewrite/--append/--prepend)."
+        "description": "Path to the .docx file (created by --rewrite/--append/--prepend)."
       },
       "command": {
         "type": "string",
         "enum": ["rewrite", "append", "prepend",
                  "insert", "insert-after", "insert-before",
                  "serialize"],
-        "description": "Что сделать с файлом."
+        "description": "Action to perform on the file."
       },
       "n": {
         "type": "integer",
-        "description": "Номер блока (1-based). Обязателен для insert/insert-after/insert-before."
+        "description": "Block number (1-based). Required for insert/insert-after/insert-before."
       },
       "blocks": {
         "type": "string",
-        "description": "Блоки в текстовом формате. Альтернатива blocks_file."
+        "description": "Blocks in text format. Alternative to blocks_file."
       },
       "blocks_file": {
         "type": "string",
-        "description": "Путь к файлу с блоками. Альтернатива blocks."
+        "description": "Path to a file containing blocks. Alternative to blocks."
       },
       "serialize_output": {
         "type": "string",
-        "description": "Только для command=serialize: путь к файлу для вывода. Если не указан — вывод в stdout."
+        "description": "Only for command=serialize: output file path. If omitted — print to stdout."
+      },
+      "json_output": {
+        "type": "boolean",
+        "description": "If true, run with --json and return structured output."
       }
     },
     "required": ["docx_path", "command"]

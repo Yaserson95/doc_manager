@@ -1,286 +1,296 @@
 ---
 name: docx-blocks
-description: Создание и редактирование Word-документов (.docx) через текстовый блочный формат. Используй, когда нужно сгенерировать .docx с заголовками, абзацами, списками, таблицами или картинками; изменить существующий документ; или извлечь его структуру в текст.
+description: >
+  Create and edit Word .docx documents via a plain-text block format.
+  Use for generating .docx files with headings, paragraphs, lists,
+  tables or images; modifying an existing document (append, prepend,
+  replace, insert, delete); or extracting document structure as text.
 license: MIT
 ---
 
 # docx-blocks
 
-## Что это
+## What it is
 
-Документ `.docx` описывается как последовательность блоков в текстовом
-формате. CLI `doc-cli` конвертирует блоки в `.docx` и обратно.
+A `.docx` document is described as a sequence of blocks in a plain-text
+format. The `doc-cli` command-line tool converts blocks into `.docx`
+and back.
 
-Инструмент командной строки — `doc-cli`. Он установлен глобально либо
-доступен как `python -m doc_cli`.
+The tool is available as `doc-cli` (console script) or
+`python -m doc_cli`.
 
-## Когда использовать
+## When to use
 
-- Пользователь просит **создать** `.docx` с текстом, заголовками,
-  списками, таблицами, картинками.
-- Пользователь просит **изменить** существующий `.docx`: добавить,
-  заменить, вставить или удалить блок.
-- Нужно **прочитать** содержимое `.docx` в текстовом виде.
+- The user asks to **create** a `.docx` with text, headings, lists,
+  tables or images.
+- The user asks to **modify** an existing `.docx`: append, prepend,
+  replace, insert or delete blocks.
+- You need to **read** the contents of a `.docx` as text.
 
-**Не используй**, если нужен `.docx` с колонтитулами, сносками,
-полями/секциями или точным позиционированием картинок — эти
-возможности не поддерживаются.
+**Do not use** when the `.docx` requires headers, footers, footnotes,
+sections/page layout, or precise image positioning — these are not
+supported.
 
-## Рабочий процесс
+## Workflow
 
-### Шаг 1. Понять, что уже есть в файле
+### Step 1. Inspect what is already in the file
 
-Если файл существует — сериализуй его, чтобы увидеть структуру:
+If the file exists, serialize it to see the structure:
 
 ```bash
 doc-cli path/to/file.docx --serialize
 ```
 
-Вывод — список блоков в текстовом формате. Каждый блок можно
-адресовать по индексу (1-based): `--insert N`, `--insert-after N`,
+The output is a list of blocks in text format. Each block can be
+addressed by index (1-based): `--insert N`, `--insert-after N`,
 `--insert-before N`.
 
-### Шаг 2. Подготовить блоки
+### Step 2. Prepare blocks
 
-Запиши блоки в temp-файл (удобнее, чем inline-строкой — не нужно
-экранировать кавычки):
+Write blocks to a temp file (easier than an inline string — no quote
+escaping needed):
 
 ```bash
 cat > /tmp/blocks.txt <<'EOF'
 {block type:"h:1" format:"align(center);text-style(bold)"}
-Заголовок документа
+Document title
 {/block}
 {block}
-Обычный абзац с {text format:"text-style(bold)"}выделением{/text}.
+A regular paragraph with {text format:"text-style(bold)"}emphasis{/text}.
 {/block}
-{block type:"ul:1"}Пункт 1{/block}
-{block type:"ul:1"}Пункт 2{/block}
+{block type:"ul:1"}Item 1{/block}
+{block type:"ul:1"}Item 2{/block}
 EOF
 ```
 
-### Шаг 3. Применить команду
+### Step 3. Apply a command
 
 ```bash
-# создать с нуля (или перезаписать)
+# create from scratch (or overwrite)
 doc-cli output.docx --rewrite --file /tmp/blocks.txt
 
-# добавить в конец
+# append at the end
 doc-cli output.docx --append --file /tmp/blocks.txt
 
-# добавить в начало
+# prepend at the beginning
 doc-cli output.docx --prepend --file /tmp/blocks.txt
 
-# заменить 2-й блок
+# replace block 2
 doc-cli output.docx --insert 2 --file /tmp/blocks.txt
 
-# вставить после 2-го
+# insert after block 2
 doc-cli output.docx --insert-after 2 --file /tmp/blocks.txt
 
-# вставить перед 1-м
+# insert before block 1
 doc-cli output.docx --insert-before 1 --file /tmp/blocks.txt
 ```
 
-### Шаг 4. Проверить
+Alternative — pass blocks via stdin:
+
+```bash
+echo '{block}Hello{/block}' | doc-cli output.docx --append --stdin
+```
+
+### Step 4. Verify
 
 ```bash
 doc-cli output.docx --serialize
 ```
 
-Если структура совпадает с ожидаемой — задача выполнена.
+If the structure matches what you intended, the task is done.
 
-## Синтаксис блоков (кратко)
+## Block syntax (quick reference)
 
-### Абзац
-
-```
-{block}Просто текст{/block}
-```
-
-### Заголовок
+### Paragraph
 
 ```
-{block type:"h:1"}Заголовок первого уровня{/block}
-{block type:"h:2"}Второго{/block}
+{block}Just text{/block}
+```
+
+### Heading
+
+```
+{block type:"h:1"}First-level heading{/block}
+{block type:"h:2"}Second-level{/block}
 ```
 
 `h:1` … `h:6`.
 
-### Список
+### List
 
 ```
-{block type:"ul:1"}Маркированный пункт{/block}
-{block type:"ol:1"}Нумерованный пункт{/block}
+{block type:"ul:1"}Bulleted item{/block}
+{block type:"ol:1"}Numbered item{/block}
 ```
 
-### Форматирование
+### Formatting
 
-Параметр `format` — строка из `key(value)`, разделённых `;`.
+The `format` parameter is a `key(value)` string, entries separated by `;`.
 
 ```
 {block format:"align(center);text-style(bold,italic);font-size(14pt)"}
-Текст
+Text
 {/block}
 ```
 
-| Ключ | Значения | Что делает |
+| Key | Values | Effect |
 |---|---|---|
-| `text-style(...)` | `bold`, `italic`, `underline` (можно несколько через `,`) | стиль шрифта |
-| `txt-color(#hex)` | `#RRGGBB` или `#RGB` | цвет текста |
-| `bg-color(#hex)` | `#RRGGBB` или `#RGB` | цвет фона |
-| `font-size(14pt)` | `pt`, `px`, `in`, `cm` или число | размер шрифта |
-| `line-height(1.5)` | число или размер | межстрочный интервал |
-| `align(center)` | `left`, `center`, `right`, `justify` | выравнивание |
-| `padding(10pt,0,10pt,0)` | `l,t,r,b` | отступы |
-| `padding-left(10pt)` | размер | отдельная сторона |
+| `text-style(...)` | `bold`, `italic`, `underline` (comma-separated) | font style |
+| `txt-color(#hex)` | `#RRGGBB` or `#RGB` | text color |
+| `bg-color(#hex)` | `#RRGGBB` or `#RGB` | background color |
+| `font-size(14pt)` | `pt`, `px`, `in`, `cm` or a bare number | font size |
+| `line-height(1.5)` | number or size | line spacing |
+| `align(center)` | `left`, `center`, `right`, `justify` | alignment |
+| `padding(10pt,0,10pt,0)` | `l,t,r,b` | padding |
+| `padding-left(10pt)` | size | single side |
 
-### Встроенное форматирование
+### Inline formatting
 
-Внутри блока можно выделить фрагмент:
+Inside a block, a fragment can be styled individually:
 
 ```
 {block}
-Обычный текст и {text format:"txt-color(#c00);text-style(bold)"}красный жирный{/text}.
+Regular text and {text format:"txt-color(#c00);text-style(bold)"}red bold{/text}.
 {/block}
 ```
 
-Поддерживаются те же ключи, кроме `padding*`.
+Same keys as above, except `padding*`.
 
-### Таблица
+### Table
 
 ```
 {block type:"table" format:"align(center);width(100%);border(1pt,solid,#333)"}
 {row header:"true" height:"24pt"}
 {cell format:"align(center);bg-color(#eef);text-style(bold)"}
-{block}Заголовок A{/block}
+{block}Header A{/block}
 {/cell}
 {cell format:"align(center);bg-color(#eef);text-style(bold)"}
-{block}Заголовок B{/block}
+{block}Header B{/block}
 {/cell}
 {/row}
 {row}
-{cell}Значение 1{/cell}
+{cell}Value 1{/cell}
 {cell format:"align(right)"}{block}42{/block}{/cell}
 {/row}
 {/block}
 ```
 
-Объединения — вне `format`:
+Merging — outside `format`:
 
 ```
 {cell colspan:"2" rowspan:"1" format:"..."}...{/cell}
 ```
 
-Ключи `format` ячейки: `align`, `valign`, `width`, `bg-color`,
-`padding*`, а также `text-style`, `txt-color`, `font-size`,
-`line-height` — как значения по умолчанию для вложенных блоков.
+Cell `format` keys: `align`, `valign`, `width`, `bg-color`, `padding*`,
+plus `text-style`, `txt-color`, `font-size`, `line-height` as defaults
+for nested blocks.
 
-### Картинка
+### Image
 
 ```
 {block}
-{image text:"Диаграмма"}/path/to/image.png{/image}
+{image text:"Diagram"}/path/to/image.png{/image}
 {/block}
 ```
 
-Или base64:
+Or base64:
 
 ```
 {image text:""}data:image/png;base64,iVBORw0KGgo...{/image}
 ```
 
-## Команды CLI
+## CLI commands
 
-| Команда | Что делает |
+| Command | What it does |
 |---|---|
-| `--rewrite "..."` | перезаписать весь файл |
-| `--append "..."` | добавить блоки в конец |
-| `--prepend "..."` | добавить блоки в начало |
-| `--insert N "..."` | заменить N-й блок |
-| `--insert-after N "..."` | вставить после N-го |
-| `--insert-before N "..."` | вставить перед N-м |
-| `--serialize` | вывести структуру в консоль |
-| `--serialize out.txt` | сохранить структуру в файл |
-| `--file FILE` / `-f FILE` | читать блоки из файла |
-| `--stdin` | читать блоки из stdin |
-| `--quiet` / `-q` | не печатать `OK: ...` |
-| `--json` | выводить результат в JSON |
+| `--rewrite "..."` | overwrite the whole file |
+| `--append "..."` | append blocks at the end |
+| `--prepend "..."` | prepend blocks at the beginning |
+| `--insert N "..."` | replace block N |
+| `--insert-after N "..."` | insert after block N |
+| `--insert-before N "..."` | insert before block N |
+| `--serialize` | print structure to stdout |
+| `--serialize out.txt` | save structure to a file |
+| `--file FILE` / `-f FILE` | read blocks from a file |
+| `--stdin` | read blocks from stdin |
+| `--quiet` / `-q` | suppress the `OK: ...` line |
+| `--json` | print result as JSON |
 
-Без команды — `--rewrite`.
+Without a command, `--rewrite` is used.
 
-## Проверка успеха
+## Success check
 
-После каждой команды:
+After each command run:
 
 ```bash
 doc-cli output.docx --serialize --quiet
 ```
 
-и убедись, что блоки появились/изменились/удалились как ожидалось.
+and confirm the blocks were added, replaced or removed as expected.
 
-Если добавлена опция `--json`, используй:
+If `--json` is enabled, use:
 
 ```bash
 doc-cli output.docx --insert 2 --file /tmp/b.txt --json
 ```
 
-Ответ:
+Response:
 
 ```json
 {"ok": true, "file": "output.docx", "blocks_before": 3, "blocks_after": 3}
 ```
 
-## Коды возврата
+## Exit codes
 
-| Код | Значение |
+| Code | Meaning |
 |---|---|
-| 0 | успех |
-| 1 | логическая ошибка (N вне диапазона) |
-| 2 | ошибка аргументов или чтения файла |
-| 3 | ошибка записи |
+| 0 | success |
+| 1 | logical error (N out of range) |
+| 2 | bad arguments or read error |
+| 3 | write error |
 
-## Частые ошибки и как их избегать
+## Common pitfalls
 
-- **Не экранируй кавычки.** Если пишешь блоки inline, используй
-  одинарные кавычки вокруг строки в bash: `'{block type:"h:1"}...'`.
-  Лучше — всегда писать блоки через `--file`.
-- **`--insert*` требует существующий файл.** Если файла ещё нет —
-  используй `--rewrite` или `--append`, они создают файл.
-- **N — 1-based.** Первый блок — `1`, не `0`.
-- **Цвета.** Поддерживаются `#RRGGBB` и короткие `#RGB`.
-- **Цвет фона абзаца** требует наличия текста в блоке, иначе
-  визуально его не видно.
-- **`align` ячейки** применяется к параграфам внутри неё, а не
-  к самой ячейке (ограничение OOXML) — но визуально работает как
-  ожидается.
+- **Do not escape quotes.** If passing blocks inline, use single
+  quotes around the string in bash: `'{block type:"h:1"}...'`.
+  Better — always write blocks via `--file`.
+- **`--insert*` requires an existing file.** If the file does not
+  exist yet, use `--rewrite` or `--append` — they create it.
+- **N is 1-based.** The first block is `1`, not `0`.
+- **Colors.** Both `#RRGGBB` and short `#RGB` are accepted.
+- **Background color** requires text inside the block, otherwise
+  it is not visible.
+- **Cell `align`** is applied to the paragraphs inside the cell,
+  not to the cell itself (an OOXML limitation) — but visually it
+  works as expected.
 
-## Пример полного сценария
+## Full example
 
-Пользователь: «Сделай документ с заголовком, двумя абзацами и таблицей
-3×2».
+User: "Create a document with a heading, two paragraphs and a 3×2 table."
 
 ```bash
 cat > /tmp/doc.txt <<'EOF'
 {block type:"h:1" format:"align(center)"}
-Отчёт за квартал
+Quarterly report
 {/block}
 {block}
-Первый абзац — вводная часть.
+First paragraph — introduction.
 {/block}
 {block}
-Второй абзац с {text format:"text-style(bold)"}выделением{/text}.
+Second paragraph with {text format:"text-style(bold)"}emphasis{/text}.
 {/block}
 {block type:"table" format:"border(1pt,solid,#333)"}
 {row header:"true"}
-{cell format:"text-style(bold);align(center)"}{block}Месяц{/block}{/cell}
-{cell format:"text-style(bold);align(center)"}{block}Выручка{/block}{/cell}
+{cell format:"text-style(bold);align(center)"}{block}Month{/block}{/cell}
+{cell format:"text-style(bold);align(center)"}{block}Revenue{/block}{/cell}
 {/row}
 {row}
-{cell}Январь{/cell}
-{cell format:"align(right)"}{block}100 000 ₽{/block}{/cell}
+{cell}January{/cell}
+{cell format:"align(right)"}{block}100,000{/block}{/cell}
 {/row}
 {row}
-{cell}Февраль{/cell}
-{cell format:"align(right)"}{block}120 000 ₽{/block}{/cell}
+{cell}February{/cell}
+{cell format:"align(right)"}{block}120,000{/block}{/cell}
 {/row}
 {/block}
 EOF
@@ -288,3 +298,7 @@ EOF
 doc-cli report.docx --rewrite --file /tmp/doc.txt --json
 doc-cli report.docx --serialize
 ```
+
+## Localization
+
+Russian version: [SKILL_ru.md](SKILL_ru.md).
