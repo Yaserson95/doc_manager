@@ -1,0 +1,15 @@
+{block type:"h:1"}Заголовок таблицы{/block}
+{block type:"table" format:"align(center);width(100%);border(1pt,solid,#888)"}
+{row header:"true"}
+{cell format:"align(center);bg-color(#888888);text-style(bold)"}
+{block}Заголовок A{/block}
+{/cell}
+{cell format:"align(center);bg-color(#888888);text-style(bold)"}
+{block}Заголовок B{/block}
+{/cell}
+{/row}
+{row}
+{cell}{block}Значение 1{/block}{/cell}
+{cell format:"align(right);txt-color(#006600);text-style(bold,italic)"}{block}42{/block}{/cell}
+{/row}
+{/block}

@@ -1,0 +1,37 @@
+{
+  "name": "docx_edit",
+  "description": "Создать или изменить .docx через блочный формат. Блоки передаются строкой в параметре blocks или через путь к файлу в blocks_file.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "docx_path": {
+        "type": "string",
+        "description": "Путь к .docx-файлу (создаётся при --rewrite/--append/--prepend)."
+      },
+      "command": {
+        "type": "string",
+        "enum": ["rewrite", "append", "prepend",
+                 "insert", "insert-after", "insert-before",
+                 "serialize"],
+        "description": "Что сделать с файлом."
+      },
+      "n": {
+        "type": "integer",
+        "description": "Номер блока (1-based). Обязателен для insert/insert-after/insert-before."
+      },
+      "blocks": {
+        "type": "string",
+        "description": "Блоки в текстовом формате. Альтернатива blocks_file."
+      },
+      "blocks_file": {
+        "type": "string",
+        "description": "Путь к файлу с блоками. Альтернатива blocks."
+      },
+      "serialize_output": {
+        "type": "string",
+        "description": "Только для command=serialize: путь к файлу для вывода. Если не указан — вывод в stdout."
+      }
+    },
+    "required": ["docx_path", "command"]
+  }
+}

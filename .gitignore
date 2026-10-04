@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+backup/
+.env
+.pytest_cache/
+.coverage
+htmlcov/
+
+# артефакты прогонов
+/output.docx
+/new.docx
+/*.tmp

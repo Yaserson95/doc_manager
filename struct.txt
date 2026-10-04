@@ -1,0 +1,86 @@
+ Том в устройстве C имеет метку System
+ Серийный номер тома: B689-1679
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager
+
+04.10.2026  13:15    <DIR>          .
+03.10.2026  21:18    <DIR>          ..
+04.10.2026  13:10               163 .gitignore
+04.10.2026  12:46    <DIR>          backup
+04.10.2026  12:54    <DIR>          docs
+04.10.2026  13:08    <DIR>          docx_blocs
+04.10.2026  13:08            12 867 doc_cli.py
+04.10.2026  13:08            19 278 doc_editor.py
+04.10.2026  12:53    <DIR>          examples
+04.10.2026  13:11               543 pyproject.toml
+03.10.2026  22:18             2 916 README.md
+04.10.2026  13:15                 0 struct.txt
+04.10.2026  12:52    <DIR>          tests
+               6 файлов         35 767 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\backup
+
+04.10.2026  12:46    <DIR>          .
+04.10.2026  13:15    <DIR>          ..
+04.10.2026  12:37            10 825 doc_cli.py
+03.10.2026  22:01            14 460 doc_editor.py
+03.10.2026  21:53             9 200 doc_formatter.py
+               3 файлов         34 485 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\docs
+
+04.10.2026  12:54    <DIR>          .
+04.10.2026  13:15    <DIR>          ..
+03.10.2026  22:22             4 813 editor.md
+03.10.2026  22:19             3 088 format.md
+03.10.2026  22:21             2 819 formatter.md
+03.10.2026  22:19             3 764 parser.md
+03.10.2026  22:20             3 237 serializer.md
+               5 файлов         17 721 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\docx_blocs
+
+04.10.2026  13:08    <DIR>          .
+04.10.2026  13:15    <DIR>          ..
+04.10.2026  00:54             6 623 format.py
+04.10.2026  13:03            15 175 formatter.py
+04.10.2026  13:02            10 216 parser.py
+04.10.2026  13:03             9 188 serializer.py
+04.10.2026  13:02            23 481 table.py
+03.10.2026  23:04             1 493 tags.py
+04.10.2026  13:08               177 __init__.py
+04.10.2026  13:08    <DIR>          __pycache__
+               7 файлов         66 353 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\docx_blocs\__pycache__
+
+04.10.2026  13:08    <DIR>          .
+04.10.2026  13:08    <DIR>          ..
+04.10.2026  13:08            10 924 format.cpython-311.pyc
+04.10.2026  13:08            20 827 formatter.cpython-311.pyc
+04.10.2026  13:08            14 735 parser.cpython-311.pyc
+04.10.2026  13:08            12 379 serializer.cpython-311.pyc
+04.10.2026  13:08            34 604 table.cpython-311.pyc
+04.10.2026  13:08             3 012 tags.cpython-311.pyc
+04.10.2026  13:08               463 __init__.cpython-311.pyc
+               7 файлов         96 944 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\examples
+
+04.10.2026  12:53    <DIR>          .
+04.10.2026  13:15    <DIR>          ..
+04.10.2026  12:48            36 995 new.docx
+04.10.2026  01:01               562 table_example.txt
+               2 файлов         37 557 байт
+
+ Содержимое папки C:\Users\YASER\.opencode\plan\doc_manager\tests
+
+04.10.2026  12:52    <DIR>          .
+04.10.2026  13:15    <DIR>          ..
+04.10.2026  12:32               139 simple-test2.py
+03.10.2026  21:35               907 simple_test.py
+               2 файлов          1 046 байт
+
+     Всего файлов:
+              32 файлов        289 873 байт
+              20 папок  209 381 982 208 байт свободно
