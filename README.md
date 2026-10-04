@@ -1,74 +1,77 @@
+[RU](README_ru.md) | [EN]
+
 # Docx Blocks
 
-Набор утилит для работы с `.docx` через текстовый блочный формат.
+A set of tools for working with `.docx` through a plain-text block format.
 
-## Что это
+## What it is
 
-Документ описывается как последовательность блоков:
+A document is described as a sequence of blocks:
 
-    {block [параметры]}содержимое{/block}
+    {block [params]}content{/block}
 
-Внутри содержимого могут быть встроенные теги:
+Content can contain inline tags:
 
-    {text format:"..."}текст{/text}
-    {image format:"..." text:"alt"}[путь | base64]{/image}
+    {text format:"..."}text{/text}
+    {image format:"..." text:"alt"}[path | base64]{/image}
 
-Поддерживаются таблицы:
+Tables are supported:
 
     {block type:"table" format:"..."}
     {row}{cell format:"..."}{block}...{/block}{/cell}{/row}
     {/block}
 
-Формат легко читать, писать и править вручную, а конвертация
-в `.docx` и обратно полностью автоматизирована.
+The format is easy to read, write and edit by hand, while conversion
+to and from `.docx` is fully automated.
 
-## Структура проекта
+## Project layout
 
     doc_manager/
-    ├── docx_blocks/              # библиотека
-    │   ├── __init__.py           # публичный API
+    ├── docx_blocks/              # library
+    │   ├── __init__.py           # public API
     │   ├── format.py             # FormatSpec
     │   ├── formatter.py          # DocxFormatter
     │   ├── parser.py             # DocxBlockParser
     │   ├── serializer.py         # DocxBlockSerializer
     │   ├── table.py              # DocxTableParser / DocxTableSerializer
-    │   └── tags.py               # поиск вложенных тегов
-    ├── doc_cli.py                # CLI (пакетная точка входа doc-cli)
-    ├── doc_editor.py             # интерактивный редактор (doc-editor)
-    ├── docs/                     # документация
-    ├── examples/                 # примеры
-    ├── tests/                    # тесты
+    │   └── tags.py               # nested tag search
+    ├── doc_cli.py                # CLI (console script doc-cli)
+    ├── doc_editor.py             # interactive editor (doc-editor)
+    ├── docs/                     # documentation
+    ├── examples/                 # examples
+    ├── tests/                    # tests
     ├── pyproject.toml
     └── README.md
 
-## Установка
+## Installation
 
 ```bash
 pip install -e .
 ```
 
-Появятся команды `doc-cli` и `doc-editor`; либо вызывай напрямую:
+This installs the `doc-cli` and `doc-editor` console scripts.
+You can also run the scripts directly:
 
 ```bash
 python doc_cli.py --help
 python doc_editor.py --help
 ```
 
-Зависимости: Python 3.10+, `python-docx`.
+Requirements: Python 3.10+, `python-docx`.
 
-## Быстрый старт
+## Quick start
 
-### Парсинг текста в .docx
+### Parse text into .docx
 
 ```python
 from docx_blocks import DocxBlockParser
 
-text = '{block type:"h:1"}Заголовок{/block}'
+text = '{block type:"h:1"}Header{/block}'
 doc = DocxBlockParser().parse(text)
 doc.save('out.docx')
 ```
 
-### Сериализация .docx в текст
+### Serialize .docx into text
 
 ```python
 from docx_blocks import DocxBlockSerializer
@@ -80,31 +83,31 @@ print(text)
 ### CLI
 
 ```bash
-doc-cli example.docx --append "{block}Ещё абзац{/block}"
+doc-cli example.docx --append "{block}One more paragraph{/block}"
 doc-cli example.docx --serialize out.txt
 ```
 
-### Интерактивный редактор
+### Interactive editor
 
 ```bash
 doc-editor example.docx
 ```
 
-## Документация
+## Documentation
 
-- [format.md](docs/format.md) — синтаксис блочного формата
-- [parser.md](docs/parser.md) — `DocxBlockParser`
-- [serializer.md](docs/serializer.md) — `DocxBlockSerializer`
-- [formatter.md](docs/formatter.md) — `DocxFormatter`
-- [table.md](docs/table.md) — таблицы
-- [tags.md](docs/tags.md) — утилиты поиска тегов
-- [cli.md](docs/cli.md) — CLI `doc-cli`
-- [editor.md](docs/editor.md) — редактор `doc-editor`
+- [format.md](docs/en/format.md) — block format syntax
+- [parser.md](docs/en/parser.md) — `DocxBlockParser`
+- [serializer.md](docs/en/serializer.md) — `DocxBlockSerializer`
+- [formatter.md](docs/en/formatter.md) — `DocxFormatter`
+- [table.md](docs/en/table.md) — tables
+- [tags.md](docs/en/tags.md) — tag search utilities
+- [cli.md](docs/en/cli.md) — `doc-cli`
+- [editor.md](docs/en/editor.md) — `doc-editor`
 
-## Ограничения
+## Limitations
 
-- Обрабатываются параграфы и таблицы; колонтитулы, сноски и
-  секции — нет.
-- У `{image}` не восстанавливаются параметры обтекания/положения.
-- `padding(l,t,r,b)` при обратной сериализации разворачивается
-  в отдельные `padding-left/top/right/bottom`.
+- Paragraphs and tables are processed; headers, footers, footnotes
+  and sections are not.
+- Image wrap/positioning is not restored.
+- `padding(l,t,r,b)` is expanded into separate
+  `padding-left/top/right/bottom` on serialization.
